@@ -10,9 +10,8 @@ export class CreateUserDto {
 
   @IsNotEmpty({ message: 'password không được để trống' })
   password: string;
+
   phone: string;
   address: string;
   image: string;
-  codeId: string;
-  codeExpired: Date;
 }

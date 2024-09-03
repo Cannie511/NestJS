@@ -9,3 +9,14 @@ export const hashPasswordHelper = async (password: string) => {
     console.log(error);
   }
 };
+
+export const comparePassword = async (
+  plainPassword: string,
+  hashPassword: string,
+) => {
+  try {
+    return await bcrypt.compare(plainPassword, hashPassword);
+  } catch (error) {
+    console.log(error);
+  }
+};
