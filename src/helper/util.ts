@@ -20,3 +20,8 @@ export const comparePassword = async (
     console.log(error);
   }
 };
+
+export const generateRandomCode = () => {
+  const code = Math.floor(100000 + Math.random() * 900000);
+  return code.toString();
+};

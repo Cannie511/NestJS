@@ -4,8 +4,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import mongoose, { Model } from 'mongoose';
-import { hashPasswordHelper } from 'src/helper/util';
+import { generateRandomCode, hashPasswordHelper } from 'src/helper/util';
 import aqp from 'api-query-params';
+import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
+import dayjs from 'dayjs';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
@@ -75,5 +77,28 @@ export class UsersService {
     } else {
       throw new BadRequestException('id không đúng định dạng');
     }
+  }
+
+  async handleRegister(registerDto: CreateAuthDto) {
+    const { name, email, password } = registerDto;
+    //hash password
+    const hashPassword = await hashPasswordHelper(password);
+    //check email
+    const isExist = await this.isEmailExist(registerDto.email);
+    if (isExist) throw new BadRequestException('Email đã tồn tại');
+    const user = await this.userModel.create({
+      name,
+      email,
+      password: hashPassword,
+      isActive: false,
+      codeId: generateRandomCode(),
+      codeExpired: dayjs().add(5, 'minutes'),
+    });
+    //send email
+
+    //response
+    return {
+      _id: user._id,
+    };
   }
 }
