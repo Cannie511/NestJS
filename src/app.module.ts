@@ -56,13 +56,13 @@ import { MailerModule } from '@nestjs-modules/mailer';
           from: '"No Reply" <no-reply@localhost>',
         },
         //preview: true,
-        // template: {
-        //   dir: process.cwd() + '/template/',
-        //   adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
-        //   options: {
-        //     strict: true,
-        //   },
-        // },
+        template: {
+          dir: process.cwd() + '/src/mail/template/',
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
       }),
       inject: [ConfigService],
     }),

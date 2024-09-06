@@ -8,9 +8,13 @@ import { generateRandomCode, hashPasswordHelper } from 'src/helper/util';
 import aqp from 'api-query-params';
 import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
 import dayjs from 'dayjs';
+import { MailerService } from '@nestjs-modules/mailer';
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly mailService: MailerService,
+  ) {}
 
   isEmailExist = async (email: string) => {
     const isExist = await this.userModel.exists({ email });
@@ -86,16 +90,28 @@ export class UsersService {
     //check email
     const isExist = await this.isEmailExist(registerDto.email);
     if (isExist) throw new BadRequestException('Email đã tồn tại');
+    const codeId = generateRandomCode();
     const user = await this.userModel.create({
       name,
       email,
       password: hashPassword,
       isActive: false,
-      codeId: generateRandomCode(),
+      codeId: codeId,
       codeExpired: dayjs().add(5, 'minutes'),
     });
     //send email
-
+    this.mailService
+      .sendMail({
+        to: user.email, // list of receivers
+        subject: '[Confirm Active Your Account] ✔', // Subject line
+        template: 'register',
+        context: {
+          name: user?.name ?? user?.email,
+          activationCode: codeId,
+        },
+      })
+      .then(() => {})
+      .catch(() => {});
     //response
     return {
       _id: user._id,

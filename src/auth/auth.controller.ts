@@ -9,7 +9,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly mailService: MailerService
+    private readonly mailService: MailerService,
   ) {}
   @Public()
   @UseGuards(LocalAuthGuard)
@@ -32,7 +32,11 @@ export class AuthController {
         to: 'Canh51102@gmail.com', // list of receivers
         subject: 'Testing Nest MailerModule ✔', // Subject line
         text: '[Hello World]', // plaintext body
-        html: '<b>Hello Word with Nest</b>', // HTML body content
+        template: 'register',
+        context: {
+          name: 'Cannie',
+          activationCode: 817231,
+        },
       })
       .then(() => {})
       .catch(() => {});
