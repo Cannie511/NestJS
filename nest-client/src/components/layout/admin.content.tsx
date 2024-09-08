@@ -1,25 +1,28 @@
-'use client';
-import { Layout } from 'antd';
-/* eslint-disable prettier/prettier */
+'use client'
 
-import React, { ReactNode } from 'react'
+import { Layout } from "antd";
 
-const AdminContent = ({ children }: { children: ReactNode }) => {
+const AdminContent = ({
+    children,
+}: Readonly<{
+    children: React.ReactNode;
+}>) => {
     const { Content } = Layout;
-  return (
-    <Content style={{ margin: '24px 16px 0' }}>
-        <div
-            style={{
-            padding: 24,
-            minHeight: 360,
-            background: '#ccc',
-            borderRadius: '#ccc',
-            }}
-        >
-            {children}
-        </div>
-    </Content>
-  )
+
+    return (
+        <Content>
+            <div
+                style={{
+                    padding: 24,
+                    minHeight: 'calc(100vh - 180px)',
+                    // background: "#ccc",
+                    // borderRadius: "#ccc",
+                }}
+            >
+                {children}
+            </div>
+        </Content>
+    )
 }
 
-export default AdminContent
+export default AdminContent;
